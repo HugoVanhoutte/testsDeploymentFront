@@ -6,7 +6,7 @@ const testData = ref<string | object>('');
 const test = async (): Promise<void> => {
   try {
     console.log('test');
-    const res = await fetch('http://testsdeploiementback-production.up.railway.app/api/route/test', {
+    const res = await fetch(`${process.env.VUE_APP_HOST}/api/route/test`, {
       method: 'GET',
       headers: { accept: 'application/json' },
     });
