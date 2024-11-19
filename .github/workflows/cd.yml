@@ -1,0 +1,48 @@
+name: CD-test
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v3
+
+      - name: set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+
+      - name: install front dependencies
+        run: |
+          cd front/
+          npm install
+
+      - name: build frontend
+        run: |
+          cd front/
+          npm run build
+
+      - name: FTP Deploy
+        # You may pin to the exact commit or the version.
+        # uses: SamKirkland/FTP-Deploy-Action@8e83cea8672e3fbcbb9fdafff34debf6ae4c5f65
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          # ftp server
+          server: ${{ secrets.FTP_SERVER }}
+          # ftp username
+          username: ${{ secrets.FTP_USERNAME }}
+          # ftp password
+          password:  ${{ secrets.FTP_PASSWORD }}
+          # Server port to connect to (read your web hosts docs)
+          port: ${{ secrets.FTP_PORT }}
+          # Folder to upload from, must end with trailing slash /
+          local-dir: dist/
+          # Path to upload to on the server. Must end with trailing slash /
+          server-dir: /08/
